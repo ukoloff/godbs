@@ -57,7 +57,7 @@ type rec2 struct {
 	_,
 	Rev,
 	_ int16
-	recO2 recO2
+	RecO2 recO2
 }
 
 // Contours of a Part

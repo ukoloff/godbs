@@ -16,7 +16,25 @@ func (me *Path) Spans(callback func(*Span)) {
 			span.Z = node.Point
 			callback(&span)
 		}
-		span.Z = node.Point
+		span.A = node.Point
 		span.Bulge = node.Bulge
 	}
+}
+
+// Copy makes deep copy
+func (me *Path) Copy() Path {
+	res := make(Path, len(*me))
+	for i, node := range *me {
+		res[i] = node
+	}
+	return res
+}
+
+// Apply transforms Path with Matrix & Shift
+func (me *Path) Apply(o2 *O2) Path {
+	res := make(Path, len(*me))
+	for i, node := range *me {
+		res[i] = node.Apply(o2)
+	}
+	return res
 }
