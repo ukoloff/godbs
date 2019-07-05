@@ -1,5 +1,9 @@
 package dbs
 
+import (
+	"encoding/binary"
+)
+
 // Prolog of DBS record
 type recHead struct {
 	Len int16
@@ -82,9 +86,14 @@ type rec28 struct {
 	Comment [0]byte
 }
 
+// Is this End of DBS File?
+func (me *recHead) IsEOF() bool {
+	return me.Len < 0
+}
+
 // Full length of DBS record in bytes
-func (me *recHead) bytes() uint16 {
-	return uint16(me.Len+1) * 4
+func (me *recHead) bytes() uint32 {
+	return uint32(me.Len+1) * 4
 }
 
 // End of DBS file
@@ -106,6 +115,11 @@ func (me *recO2) O2() O2 {
 		Y:     me.Y.Point(),
 		Delta: me.Delta.Point(),
 	}
+}
+
+// Payload length for DBS record, bytes
+func (me *recAny) payload() uint32 {
+	return me.recHead.bytes() - uint32(binary.Size(*me))
 }
 
 // Prepare to write
