@@ -24,9 +24,7 @@ func (me *Path) Spans(callback func(*Span)) {
 // Copy makes deep copy
 func (me *Path) Copy() Path {
 	res := make(Path, len(*me))
-	for i, node := range *me {
-		res[i] = node
-	}
+	copy(res, *me)
 	return res
 }
 
