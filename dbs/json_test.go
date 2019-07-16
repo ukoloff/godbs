@@ -6,20 +6,10 @@ import (
 )
 
 func TestMarshal(t *testing.T) {
-	dbs := DBS{
-		Part{
-			Name: "Circle",
-			Paths: []Path{
-				[]Node{
-					Node{Point{1, 0}, 1},
-					Node{Point{-1, 0}, 0},
-				},
-			},
-		},
-	}
+	dbs := NewCircle(1)
 	if j, e := json.Marshal(dbs); e != nil {
 		t.Error(e)
-	} else if string(j) != `[{"partid":"Circle","paths":[[[1,0,1],[-1,0,0]]]}]` {
+	} else if string(j) != `[{"partid":"Circle","paths":[[[1,0,-1],[-1,0,-1],[1,0,0]]]}]` {
 		t.Errorf("Invalid JSON")
 	}
 }

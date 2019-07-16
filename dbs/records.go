@@ -169,6 +169,6 @@ func (me *recAny) payload() uint32 {
 // Prepare to write
 func (me *recAny) beforeWrite(payload int) {
 	me.ID2 = me.ID
-	me.Len = int16((payload + binary.Size(recAny{}) + 3) / 4)
+	me.Len = int16((payload+binary.Size(recAny{})+3)/4) - 1
 	me.Len2 = me.Len
 }

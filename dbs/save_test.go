@@ -8,21 +8,11 @@ import (
 )
 
 func TestSave(t *testing.T) {
-	dbs := DBS{
-		Part{
-			Name: "Circle",
-			Paths: []Path{
-				Path{
-					Node{Point{1, 0}, 1},
-					Node{Point{-1, 0}, 0},
-				},
-			},
-		},
-	}
+	dbs := NewCircle(1)
 	var out bytes.Buffer
 
 	dbs.Save(&out)
 	fmt.Println(out.Bytes())
-	f, _ := os.Create("x.dbs")
+	f, _ := os.Create("testdata/.!.dbs")
 	dbs.Save(f)
 }
