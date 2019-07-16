@@ -45,6 +45,7 @@ func (me *dbsWriter) writePart(part *Part) {
 	me.id++ // = partID
 	me.rec8(len(part.Paths))
 	me.rec26(part)
+	me.rec27(part)
 }
 
 // Write Rec1 for Path
@@ -95,6 +96,18 @@ func (me *dbsWriter) rec26(part *Part) {
 	binary.Write(me.writer, binary.LittleEndian, prolog)
 
 	epilog.fromString(part.Name)
+
+	binary.Write(me.writer, binary.LittleEndian, epilog)
+}
+
+// Write Rec27 for Part
+func (me *dbsWriter) rec27(part *Part) {
+	var prolog recAny
+	var epilog rec27
+	prolog.ID = me.id
+	prolog.Type = 27
+	prolog.beforeWrite(binary.Size(epilog))
+	binary.Write(me.writer, binary.LittleEndian, prolog)
 
 	binary.Write(me.writer, binary.LittleEndian, epilog)
 }

@@ -1,5 +1,7 @@
 package dbs
 
+import "math/cmplx"
+
 // Point represents 2D point
 type Point struct {
 	X, Y float64
@@ -34,4 +36,19 @@ func (me *Point) Expand(by float64) Point {
 // Apply transforms points with Matrix & Shift
 func (me *Point) Apply(o2 *O2) Point {
 	return C2Point(o2.X.Expand(me.X).C() + o2.Y.Expand(me.Y).C() + o2.Delta.C())
+}
+
+// Add two Points (as vectors)
+func (me *Point) Add(other *Point) Point {
+	return C2Point(me.C() + other.C())
+}
+
+// Sub subtracts two Points (as vectors)
+func (me *Point) Sub(other *Point) Point {
+	return C2Point(me.C() - other.C())
+}
+
+// Abs returns absolute value (length) of Point / vector
+func (me Point) Abs() float64 {
+	return cmplx.Abs(me.C())
 }
