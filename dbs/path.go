@@ -36,3 +36,23 @@ func (me *Path) Apply(o2 *O2) Path {
 	}
 	return res
 }
+
+// Area returns area of (closed) Path
+func (me *Path) Area() float64 {
+	a := 0.0
+	if me.IsClose() {
+		me.Spans(func(span *Span) {
+			a += span.Area()
+		})
+	}
+	return a
+}
+
+// Perimeter returns length of a Path
+func (me *Path) Perimeter() float64 {
+	p := 0.0
+	me.Spans(func(span *Span) {
+		p += span.Perimeter()
+	})
+	return p
+}

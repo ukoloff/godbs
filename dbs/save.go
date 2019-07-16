@@ -109,6 +109,9 @@ func (me *dbsWriter) rec27(part *Part) {
 	prolog.beforeWrite(binary.Size(epilog))
 	binary.Write(me.writer, binary.LittleEndian, prolog)
 
+	epilog.Area = float32(part.Area() / 1e4)
+	epilog.Perimeter = float32(part.Perimeter() / 1e2)
+
 	binary.Write(me.writer, binary.LittleEndian, epilog)
 }
 

@@ -52,3 +52,8 @@ func (me *Point) Sub(other *Point) Point {
 func (me Point) Abs() float64 {
 	return cmplx.Abs(me.C())
 }
+
+// Abs2 returns squared length of Point / vector
+func (me Point) Abs2() float64 {
+	return me.X*me.X + me.Y*me.Y
+}

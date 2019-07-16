@@ -23,3 +23,21 @@ func (me *Part) Apply(o2 *O2) Part {
 	}
 	return res
 }
+
+// Area returns area of a Part
+func (me *Part) Area() float64 {
+	a := 0.0
+	for _, path := range me.Paths {
+		a += path.Area()
+	}
+	return a
+}
+
+// Perimeter returns length of a Part
+func (me *Part) Perimeter() float64 {
+	p := 0.0
+	for _, path := range me.Paths {
+		p += path.Perimeter()
+	}
+	return p
+}
