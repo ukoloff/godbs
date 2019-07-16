@@ -34,7 +34,7 @@ func (me *dbsWriter) writeDBS(dbs *DBS) {
 
 // Write a Part
 func (me *dbsWriter) writePart(part *Part) {
-	partID := me.id + int16(len(part.Paths))
+	partID := me.id + int16(len(part.Paths)) + 1
 	for i, path := range part.Paths {
 		partID := partID
 		if i == 0 {
@@ -42,6 +42,9 @@ func (me *dbsWriter) writePart(part *Part) {
 		}
 		me.rec1(&path, partID)
 	}
+	me.id++ // = partID
+	me.rec8(len(part.Paths))
+	me.rec26(part)
 }
 
 // Write Rec1 for Path
@@ -52,7 +55,7 @@ func (me *dbsWriter) rec1(path *Path, partID int16) {
 	me.id++
 	prolog.ID = me.id
 	prolog.Type = 1
-	prolog.beforeWrite(binary.Size(prolog) + binary.Size(rec1item{})*len(*path))
+	prolog.beforeWrite(binary.Size(epilog) + binary.Size(rec1item{})*len(*path))
 	epilog.Subtype = 1
 	epilog.Part = partID
 	epilog.Original = me.id
@@ -66,6 +69,34 @@ func (me *dbsWriter) rec1(path *Path, partID int16) {
 		nodeRec.fromNode(&node)
 		binary.Write(me.writer, binary.LittleEndian, nodeRec)
 	}
+}
+
+// Write Rec8 for Part
+func (me *dbsWriter) rec8(count int) {
+	var prolog recAny
+	prolog.ID = me.id
+	prolog.Type = 8
+	prolog.beforeWrite(binary.Size(rec8item{}) * count)
+	binary.Write(me.writer, binary.LittleEndian, prolog)
+
+	for i := 0; i < count; i++ {
+		ref := rec8item{ID: int16(int(me.id) - count + i)}
+		binary.Write(me.writer, binary.LittleEndian, ref)
+	}
+}
+
+// Write Rec26 for Part
+func (me *dbsWriter) rec26(part *Part) {
+	var prolog recAny
+	var epilog rec26
+	prolog.ID = me.id
+	prolog.Type = 26
+	prolog.beforeWrite(binary.Size(epilog))
+	binary.Write(me.writer, binary.LittleEndian, prolog)
+
+	epilog.fromString(part.Name)
+
+	binary.Write(me.writer, binary.LittleEndian, epilog)
 }
 
 // Write EOF

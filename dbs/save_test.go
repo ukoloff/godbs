@@ -3,6 +3,7 @@ package dbs
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"testing"
 )
 
@@ -11,7 +12,7 @@ func TestSave(t *testing.T) {
 		Part{
 			Name: "Circle",
 			Paths: []Path{
-				[]Node{
+				Path{
 					Node{Point{1, 0}, 1},
 					Node{Point{-1, 0}, 0},
 				},
@@ -22,4 +23,6 @@ func TestSave(t *testing.T) {
 
 	dbs.Save(&out)
 	fmt.Println(out.Bytes())
+	f, _ := os.Create("x.dbs")
+	dbs.Save(f)
 }

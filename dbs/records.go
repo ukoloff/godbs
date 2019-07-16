@@ -2,6 +2,7 @@ package dbs
 
 import (
 	"encoding/binary"
+	"strings"
 )
 
 // Prolog of DBS record
@@ -137,6 +138,27 @@ func (me *recO2) O2() O2 {
 		Y:     me.Y.Point(),
 		Delta: me.Delta.Point(),
 	}
+}
+
+// Pairwise swap of bytes
+func (me *rec26) swap() {
+	for i := 0; i+1 < len(me.Name); i += 2 {
+		me.Name[i], me.Name[i+1] = me.Name[i+1], me.Name[i]
+	}
+}
+
+func (me *rec26) String() string {
+	me.swap()
+	defer me.swap()
+	return strings.TrimSpace(string(me.Name[:]))
+}
+
+func (me *rec26) fromString(from string) {
+	if len(from) < len(me.Name) {
+		from += strings.Repeat(" ", len(me.Name)-len(from))
+	}
+	copy(me.Name[:], []byte(from))
+	me.swap()
 }
 
 // Payload length for DBS record, bytes
