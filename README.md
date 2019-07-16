@@ -1,7 +1,10 @@
 # godbs
+
+[![Build Status](https://travis-ci.org/ukoloff/godbs.svg?branch=master)](https://travis-ci.org/ukoloff/godbs)
+
 [DBS] manipulation in [Golang]
 
-See also: 
+See also:
 * [JavaScript][dbs.js] version
 * [C++][dbs.cpp] version
 
