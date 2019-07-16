@@ -4,8 +4,9 @@ go:
 - 1.12.x
 - 1.11.x
 
-# env:
+env:
 #   GO111MODULE: on
+  dbs: go
 
 script:
   go test ./dbs
