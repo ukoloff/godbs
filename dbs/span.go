@@ -20,7 +20,7 @@ func (span *Span) Vector() Point {
 
 // Area calculates area term for a Span
 func (span *Span) Area() float64 {
-	s := (span.Z.X - span.A.Y - span.Z.Y*span.A.X) / 2
+	s := (span.Z.X*span.A.Y - span.Z.Y*span.A.X) / 2
 	if span.Bulge != 0 {
 		BuBu := square(span.Bulge)
 		s -= (math.Atan(span.Bulge)*square(1+BuBu) - (1-BuBu)*span.Bulge) /

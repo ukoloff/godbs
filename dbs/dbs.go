@@ -20,3 +20,11 @@ func (me *DBS) Apply(o2 *O2) DBS {
 	}
 	return res
 }
+
+// Rename changes names of first Parts in file
+func (me DBS) Rename(names ...string) DBS {
+	for i, name := range names {
+		me[i].Rename(name)
+	}
+	return me
+}

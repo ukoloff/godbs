@@ -36,5 +36,5 @@ func NewRect(size *Point) DBS {
 
 // NewSquare creates square of that size
 func NewSquare(size float64) DBS {
-	return NewRect(&Point{size, size})
+	return NewRect(&Point{size, size}).Rename("Square")
 }

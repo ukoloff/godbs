@@ -41,3 +41,9 @@ func (me *Part) Perimeter() float64 {
 	}
 	return p
 }
+
+// Rename changes name of Part
+func (me *Part) Rename(name string) Part {
+	me.Name = name
+	return *me
+}
