@@ -102,11 +102,33 @@ func (me *recEOF) init() {
 	me.EOF = -1
 }
 
+func (me *rec1item) fromNode(node *Node) {
+	me.X = float32(node.X)
+	me.Y = float32(node.Y)
+	me.Bulge = float32(node.Bulge)
+}
+
+func (me *rec1item) Node() Node {
+	return Node{
+		Point{
+			float64(me.X),
+			float64(me.Y),
+		},
+		float64(me.Bulge),
+	}
+}
+
 func (me *recPoint) Point() Point {
 	return Point{
 		X: float64(me.X),
 		Y: float64(me.Y),
 	}
+}
+
+func (me *recO2) eye() {
+	*me = recO2{}
+	me.X.X = 1
+	me.Y.Y = 1
 }
 
 func (me *recO2) O2() O2 {
@@ -123,7 +145,8 @@ func (me *recAny) payload() uint32 {
 }
 
 // Prepare to write
-func (me *recAny) beforeWrite() {
+func (me *recAny) beforeWrite(payload int) {
 	me.ID2 = me.ID
+	me.Len = int16((payload + binary.Size(recAny{}) + 3) / 4)
 	me.Len2 = me.Len
 }

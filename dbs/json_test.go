@@ -1,13 +1,12 @@
 package dbs
 
-import(
-	"testing"
+import (
 	"encoding/json"
-	) 
-	
+	"testing"
+)
 
 func TestMarshal(t *testing.T) {
-	dbs := []Part{
+	dbs := DBS{
 		Part{
 			Name: "Circle",
 			Paths: []Path{
