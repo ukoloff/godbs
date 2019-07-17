@@ -93,8 +93,8 @@ func (me *recHead) IsEOF() bool {
 }
 
 // Full length of DBS record in bytes
-func (me *recHead) bytes() uint32 {
-	return uint32(me.Len+1) * 4
+func (me *recHead) bytes() int {
+	return int(me.Len+1) * 4
 }
 
 // End of DBS file
@@ -162,8 +162,8 @@ func (me *rec26) fromString(from string) {
 }
 
 // Payload length for DBS record, bytes
-func (me *recAny) payload() uint32 {
-	return me.recHead.bytes() - uint32(binary.Size(*me))
+func (me *recAny) payload() int {
+	return me.recHead.bytes() - binary.Size(*me)
 }
 
 // Prepare to write
