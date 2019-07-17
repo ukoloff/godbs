@@ -13,7 +13,7 @@ func TestSaveCircle(t *testing.T) {
 }
 
 func TestSaveRect(t *testing.T) {
-	dbs := NewRect(&Point{27, 42})
+	dbs := NewRect(&Point{42, 27})
 	f, _ := os.Create("testdata/.r.dbs")
 	defer f.Close()
 	dbs.Save(f)

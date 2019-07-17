@@ -79,7 +79,7 @@ func (me *dbsReader) rec1() {
 	if me.prolog.Type != 1 {
 		return
 	}
-	count := (me.prolog.payload() - binary.Size(r2)) / binary.Size(rec1item{})
+	count := me.unread / binary.Size(rec1item{})
 	if count < 0 {
 		count = 0
 	}
@@ -96,7 +96,7 @@ func (me *dbsReader) rec1() {
 func (me *dbsReader) rec8() {
 	me.partByID() // Mark position for Part
 
-	count := me.prolog.payload() / binary.Size(rec8item{})
+	count := me.unread / binary.Size(rec8item{})
 	list := make([]int16, count)
 	me.paths[me.prolog.ID] = list
 	for i := range list {
@@ -110,8 +110,7 @@ func (me *dbsReader) rec8() {
 func (me *dbsReader) rec26() {
 	var r26 rec26
 	me.read(&r26)
-	part := me.partByID()
-	part.Name = r26.String()
+	me.partByID().Name = r26.String()
 }
 
 // Find or create Part by ID
