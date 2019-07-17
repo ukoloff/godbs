@@ -2,13 +2,17 @@ version: 1.0.{build}-{branch}
 
 build: off
 
-matrix:
-  stack:
-    - go 1.12
-    - go 1.11
+environment:
+  matrix:
+  - GO_V: 1.12
+  - GO_V: 1.11
+
+platform:
+- x86
+- x64
 
 before_test:
-  - go version
+- go version
 
 test_script:
-  - go test ./dbs
+- go test ./dbs
