@@ -1,0 +1,14 @@
+version: 1.0.{build}-{branch}
+
+build: off
+
+matrix:
+  stack:
+    - go 1.12
+    - go 1.11
+
+before_test:
+  - go version
+
+test_script:
+  - go test ./dbs
