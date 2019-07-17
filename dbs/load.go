@@ -125,6 +125,24 @@ func (me *dbsReader) partByID() *Part {
 	return &me.parts[idx]
 }
 
+// Create (COPY, Rec 2) path by its ID
+func (me *dbsReader) pathByID(id int16) Path {
+	r2, ok := me.copies[id]
+	if !ok {
+		panic("DBS Copy not found: " + strconv.Itoa(int(id)))
+	}
+	orig, ok := me.originals[r2.Original]
+	if !ok {
+		panic("DBS Original not found: " + strconv.Itoa(int(r2.Original)))
+	}
+	o2 := r2.RecO2.O2()
+	orig = orig.Apply(&o2)
+	if r2.Rev != 0 {
+		orig = orig.Reverse()
+	}
+	return orig
+}
+
 // Generate DBS
 func (me *dbsReader) Assemble() DBS {
 	for id, x := range me.paths {
@@ -132,20 +150,7 @@ func (me *dbsReader) Assemble() DBS {
 		paths := make([]Path, len(x))
 		part.Paths = paths
 		for i, id := range x {
-			r2, ok := me.copies[id]
-			if !ok {
-				panic("DBS Copy not found: " + strconv.Itoa(int(id)))
-			}
-			orig, ok := me.originals[r2.Original]
-			if !ok {
-				panic("DBS Original not found: " + strconv.Itoa(int(r2.Original)))
-			}
-			o2 := r2.RecO2.O2()
-			orig = orig.Apply(&o2)
-			if r2.Rev != 0 {
-				orig = orig.Reverse()
-			}
-			paths[i] = orig
+			paths[i] = me.pathByID(id)
 		}
 	}
 	return me.parts

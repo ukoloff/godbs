@@ -30,6 +30,8 @@ func TestCircle(t *testing.T) {
 var rnd *rand.Rand
 
 func testRandomCAE(t *testing.T, dbs *DBS) {
+	testReverse(t, dbs)
+
 	if rnd == nil {
 		rnd = rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
 	}
@@ -46,5 +48,15 @@ func testRandomCAE(t *testing.T, dbs *DBS) {
 		}
 		assert.InDelta(t, part.Area(), a, 1e-3)
 		assert.InDelta(t, part.Perimeter(), p, 1e-3)
+	}
+}
+
+func testReverse(t *testing.T, dbs *DBS) {
+	for _, part := range *dbs {
+		for _, path := range part.Paths {
+			rev := path.Reverse()
+			assert.InDelta(t, path.Area(), -rev.Area(), 1e-3)
+			assert.InDelta(t, path.Perimeter(), rev.Perimeter(), 1e-3)
+		}
 	}
 }
