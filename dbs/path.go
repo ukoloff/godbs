@@ -35,7 +35,7 @@ func (me *Path) Reverse() Path {
 		idx := len(res) - i - 1
 		res[idx].Point = node.Point
 		if idx == 0 {
-			res[len(res)-1].Bulge = 0
+			res[i].Bulge = 0
 		} else {
 			res[idx-1].Bulge = -node.Bulge
 		}

@@ -7,7 +7,7 @@ type DBS []Part
 func (me *DBS) Copy() DBS {
 	res := make(DBS, len(*me))
 	for i, part := range *me {
-		res[i] = part
+		res[i] = part.Copy()
 	}
 	return res
 }
