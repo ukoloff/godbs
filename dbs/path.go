@@ -28,6 +28,21 @@ func (me *Path) Copy() Path {
 	return res
 }
 
+// Reverse returns Path in opposite direction
+func (me *Path) Reverse() Path {
+	res := make(Path, len(*me))
+	for i, node := range *me {
+		idx := len(res) - i - 1
+		res[idx].Point = node.Point
+		if idx == 0 {
+			res[idx].Bulge = 0
+		} else {
+			res[idx-1].Bulge = node.Bulge
+		}
+	}
+	return res
+}
+
 // Apply transforms Path with Matrix & Shift
 func (me *Path) Apply(o2 *O2) Path {
 	res := make(Path, len(*me))

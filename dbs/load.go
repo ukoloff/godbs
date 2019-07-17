@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/binary"
 	"io"
+	"strconv"
 )
 
 type dbsReader struct {
@@ -22,7 +23,7 @@ func (me *DBS) Load(from io.Reader) {
 	var reader dbsReader
 	reader.init(from)
 	reader.readRecords()
-	*me = reader.parts
+	*me = reader.Assemble()
 }
 
 // Constructor
@@ -122,4 +123,30 @@ func (me *dbsReader) partByID() *Part {
 		me.parts = append(me.parts, Part{})
 	}
 	return &me.parts[idx]
+}
+
+// Generate DBS
+func (me *dbsReader) Assemble() DBS {
+	for id, x := range me.paths {
+		part := &me.parts[me.partsMap[id]]
+		paths := make([]Path, len(x))
+		part.Paths = paths
+		for i, id := range x {
+			r2, ok := me.copies[id]
+			if !ok {
+				panic("DBS Copy not found: " + strconv.Itoa(int(id)))
+			}
+			orig, ok := me.originals[r2.Original]
+			if !ok {
+				panic("DBS Original not found: " + strconv.Itoa(int(r2.Original)))
+			}
+			o2 := r2.RecO2.O2()
+			orig = orig.Apply(&o2)
+			if r2.Rev != 0 {
+				orig = orig.Reverse()
+			}
+			paths[i] = orig
+		}
+	}
+	return me.parts
 }
