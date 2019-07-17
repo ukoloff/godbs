@@ -1,0 +1,23 @@
+version: 1.0.{build}-{branch}
+
+build: off
+
+# environment:
+#   matrix:
+#   - GO_V: 112
+#   - GO_V: 111
+#
+# platform:
+# - x86
+# - x64
+
+# install:
+# - set PLTFRM=-%PLATFORM%
+# - PATH C:\go%GO_V%%PLTFRM:-x64=%\bin;%PATH%
+# - echo %PATH%
+
+before_test:
+- go version
+
+test_script:
+- go test ./dbs
