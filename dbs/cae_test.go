@@ -41,7 +41,9 @@ func testRandomCAE(t *testing.T, dbs *DBS) {
 			part = dbs.Copy()[0]
 		} else {
 			var o2 O2
-			o2.CCW(float64(rnd.Int31n(800) - 400))
+			o2.CCW(rnd.Float64()*800 - 400)
+			o2.Delta.X = rnd.Float64()*200 - 100
+			o2.Delta.Y = rnd.Float64()*200 - 100
 			part = dbs.Apply(&o2)[0]
 		}
 		assert.InDelta(t, part.Area(), a, 1e-3)
