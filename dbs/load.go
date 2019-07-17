@@ -7,8 +7,14 @@ import (
 )
 
 type dbsReader struct {
-	reader *bufio.Reader
-	unread int
+	reader    *bufio.Reader
+	unread    int
+	prolog    recAny
+	parts     DBS
+	partsMap  map[int16]int
+	paths     map[int16][]int16
+	copies    map[int16]rec2
+	originals map[int16]Path
 }
 
 // Load DBS from file / Reader
@@ -16,11 +22,16 @@ func (me *DBS) Load(from io.Reader) {
 	var reader dbsReader
 	reader.init(from)
 	reader.readRecords()
+	*me = reader.parts
 }
 
 // Constructor
 func (me *dbsReader) init(from io.Reader) {
 	me.reader = bufio.NewReader(from)
+	me.partsMap = map[int16]int{}
+	me.paths = map[int16][]int16{}
+	me.copies = map[int16]rec2{}
+	me.originals = map[int16]Path{}
 }
 
 // Read binary data
@@ -30,25 +41,22 @@ func (me *dbsReader) read(data interface{}) {
 }
 
 // Read DBS record
-func (me *dbsReader) readProlog(data *recAny) bool {
-	me.read(&data.recHead)
-	if data.Len < 0 {
+func (me *dbsReader) readProlog() bool {
+	me.read(&me.prolog.recHead)
+	if me.prolog.Len < 0 {
 		return false
 	}
-	me.read(&data.recTail)
-	me.unread = data.payload()
+	me.read(&me.prolog.recTail)
+	me.unread = me.prolog.payload()
 	return true
 }
 
 // Consume DBS file
 func (me *dbsReader) readRecords() {
-	var prolog recAny
-	for me.readProlog(&prolog) {
-		switch prolog.Type {
-		case 1:
-			me.rec1(true)
-		case 2:
-			me.rec1(false)
+	for me.readProlog() {
+		switch me.prolog.Type {
+		case 1, 2:
+			me.rec1()
 		case 8:
 			me.rec8()
 		case 26:
@@ -63,13 +71,55 @@ func (me *dbsReader) readRecords() {
 }
 
 // Read Record 1/2
-func (me *dbsReader) rec1(isOrig bool) {
+func (me *dbsReader) rec1() {
+	var r2 rec2
+	me.read(&r2)
+	me.copies[me.prolog.ID] = r2
+	if me.prolog.Type != 1 {
+		return
+	}
+	count := (me.prolog.payload() - binary.Size(r2)) / binary.Size(rec1item{})
+	if count < 0 {
+		count = 0
+	}
+	path := make(Path, count)
+	me.originals[r2.Original] = path
+	for i := range path {
+		var node rec1item
+		me.read(&node)
+		path[i] = node.Node()
+	}
 }
 
 // Read Record 8
 func (me *dbsReader) rec8() {
+	me.partByID() // Mark position for Part
+
+	count := me.prolog.payload() / binary.Size(rec8item{})
+	list := make([]int16, count)
+	me.paths[me.prolog.ID] = list
+	for i := range list {
+		var path rec8item
+		me.read(&path)
+		list[i] = path.ID
+	}
 }
 
 // Read Record 26
 func (me *dbsReader) rec26() {
+	var r26 rec26
+	me.read(&r26)
+	part := me.partByID()
+	part.Name = r26.String()
+}
+
+// Find or create Part by ID
+func (me *dbsReader) partByID() *Part {
+	idx, ok := me.partsMap[me.prolog.ID]
+	if !ok {
+		idx = len(me.parts)
+		me.partsMap[me.prolog.ID] = idx
+		me.parts = append(me.parts, Part{})
+	}
+	return &me.parts[idx]
 }
