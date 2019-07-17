@@ -7,7 +7,7 @@ import (
 
 func TestSaveCircle(t *testing.T) {
 	dbs := NewCircle(99)
-	f, _ := os.Create("testdata/.!.dbs")
+	f, _ := os.Create("testdata/.c.dbs")
 	defer f.Close()
 	dbs.Save(f)
 }
