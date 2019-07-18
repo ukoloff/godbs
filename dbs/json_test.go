@@ -6,7 +6,8 @@ import (
 )
 
 func TestMarshal(t *testing.T) {
-	dbs := NewCircle(1)
+	var dbs DBS
+	dbs.MakeCircle(1)
 	if j, e := json.Marshal(dbs); e != nil {
 		t.Error(e)
 	} else if string(j) != `[{"partid":"Circle","paths":[[[1,0,-1],[-1,0,-1],[1,0,0]]]}]` {

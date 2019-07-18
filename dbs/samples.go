@@ -1,8 +1,8 @@
 package dbs
 
-// NewCircle creates circle of that radius
-func NewCircle(radius float64) DBS {
-	return DBS{
+// MakeCircle creates circle of that radius
+func (me *DBS) MakeCircle(radius float64) {
+	*me = DBS{
 		Part{
 			Name: "Circle",
 			Paths: []Path{
@@ -16,9 +16,9 @@ func NewCircle(radius float64) DBS {
 	}
 }
 
-// NewRect creates rectangle of that dimensions
-func NewRect(size *Point) DBS {
-	return DBS{
+// MakeRect creates rectangle of that dimensions
+func (me *DBS) MakeRect(size *Point) {
+	*me = DBS{
 		Part{
 			Name: "Rectan",
 			Paths: []Path{
@@ -34,7 +34,8 @@ func NewRect(size *Point) DBS {
 	}
 }
 
-// NewSquare creates square of that size
-func NewSquare(size float64) DBS {
-	return NewRect(&Point{size, size}).Rename("Square")
+// MakeSquare creates square of that size
+func (me *DBS) MakeSquare(size float64) {
+	me.MakeRect(&Point{size, size})
+	me.Rename("Square")
 }

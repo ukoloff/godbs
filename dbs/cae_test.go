@@ -10,7 +10,8 @@ import (
 )
 
 func TestSquare(t *testing.T) {
-	sq := NewSquare(1000)
+	var sq DBS
+	sq.MakeSquare(1000)
 	assert.Len(t, sq, 1)
 	assert.InDelta(t, sq[0].Area(), 1e6, 1e-3)
 	assert.InDelta(t, sq[0].Perimeter(), 4e3, 1e-3)
@@ -19,7 +20,8 @@ func TestSquare(t *testing.T) {
 }
 
 func TestCircle(t *testing.T) {
-	ci := NewCircle(10)
+	var ci DBS
+	ci.MakeCircle(10)
 	assert.Len(t, ci, 1)
 	assert.InDelta(t, ci[0].Area(), math.Pi*1e2, 1e-3)
 	assert.InDelta(t, ci[0].Perimeter(), math.Pi*20, 1e-3)
@@ -60,5 +62,18 @@ func testReverse(t *testing.T, dbs *DBS) {
 			assert.InDelta(t, path.Area(), -rev.Area(), 1e-3)
 			assert.InDelta(t, path.Perimeter(), rev.Perimeter(), 1e-3)
 		}
+	}
+}
+
+func TestCircleBounds(t *testing.T) {
+	var ci DBS
+	ci.MakeCircle(1)
+	for angle := 0; angle < 360; angle++ {
+		var o2 O2
+		o2.CCW(float64(angle))
+		z := ci.Apply(&o2)
+		b := z.Bounds()
+		assert.InDelta(t, b.Min.Sub(&Point{-1, -1}).Abs(), 0, 1e-3)
+		assert.InDelta(t, b.Max.Sub(&Point{+1, +1}).Abs(), 0, 1e-3)
 	}
 }
