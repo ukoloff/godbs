@@ -2,6 +2,8 @@ version: 1.0.{build}-{branch}
 
 build: off
 
+stack: go 1.11
+
 # environment:
 #   matrix:
 #   - GO_V: 112
