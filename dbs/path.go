@@ -71,3 +71,14 @@ func (me *Path) Perimeter() float64 {
 	})
 	return p
 }
+
+// Bounds return bounding rectangle of a Path
+func (me *Path) Bounds() Rect {
+	var result Rect
+	result.SetEmpty()
+	me.Spans(func(span *Span) {
+		bounds := span.Bounds()
+		result.AddRect(&bounds)
+	})
+	return result
+}

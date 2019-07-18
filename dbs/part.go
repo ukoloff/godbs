@@ -54,3 +54,14 @@ func (me *Part) Rename(name string) Part {
 	me.Name = name
 	return *me
 }
+
+// Bounds return bounding rectangle of a Part
+func (me *Part) Bounds() Rect {
+	var result Rect
+	result.SetEmpty()
+	for _, path := range me.Paths {
+		bounds := path.Bounds()
+		result.AddRect(&bounds)
+	}
+	return result
+}

@@ -28,3 +28,14 @@ func (me DBS) Rename(names ...string) DBS {
 	}
 	return me
 }
+
+// Bounds return bounding rectangle
+func (me *DBS) Bounds() Rect {
+	var result Rect
+	result.SetEmpty()
+	for _, part := range *me {
+		bounds := part.Bounds()
+		result.AddRect(&bounds)
+	}
+	return result
+}
